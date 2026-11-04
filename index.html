@@ -7,479 +7,256 @@
 <title>Übungsvideo erstellen</title>
 <style>
   :root {
-    --bg: #f5f7f8;
-    --card: #ffffff;
-    --text: #14212b;
-    --muted: #5d6b76;
-    --line: #e2e8ec;
+    --text: #1f2a30;
+    --muted: #6b7780;
+    --line: #e3e8eb;
+    --soft: #f6f8f9;
     --accent: #12a5c4;
     --accent-dark: #0d849d;
-    --accent-soft: #eef9fb;
-    --error: #c2412d;
     --ok: #1f8a5b;
-    --ok-soft: #eaf6f0;
-    --radius: 14px;
+    --ok-dark: #18704a;
+    --error: #c2412d;
+    --dark: #0f171b;
+    --h: 270px;
   }
   * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  }
-  main { max-width: 720px; margin: 0 auto; padding: 28px 16px 56px; }
-  h1 { font-size: 26px; margin: 0 0 6px; }
-  .lead { color: var(--muted); margin: 0 0 22px; }
-  .goal {
-    display: flex; gap: 10px; align-items: center;
-    background: var(--accent-soft); color: var(--accent-dark);
-    border-radius: 10px; padding: 10px 14px; margin: 0 0 22px; font-size: 15px;
-  }
-  .newtab { font-size: 13px; color: var(--muted); margin: -10px 0 18px; }
-  .newtab a { color: var(--accent-dark); }
-
-  .card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 14px;
-    transition: border-color .2s;
-  }
-  .card.done { border-color: #bfe3d1; }
-  .step { display: flex; align-items: center; gap: 10px; margin: 0 0 4px; font-size: 17px; font-weight: 600; }
-  .step-sub { color: var(--muted); font-size: 14px; margin: 0 0 14px 36px; }
-  .num {
-    width: 26px; height: 26px; border-radius: 50%;
-    background: var(--accent); color: #fff;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-size: 14px; flex-shrink: 0;
-  }
-  .card.done .num { background: var(--ok); font-size: 0; }
-  .card.done .num::after { content: "✓"; font-size: 15px; }
-  .card.locked { opacity: .55; }
-
-  .drop {
-    border: 2px dashed var(--line);
-    border-radius: 12px;
-    padding: 30px 16px;
-    text-align: center;
-    color: var(--muted);
-    cursor: pointer;
-    transition: border-color .15s, background .15s;
-    display: block;
-  }
-  .drop:hover, .drop.over { border-color: var(--accent); background: var(--accent-soft); }
-  .drop strong { color: var(--accent-dark); font-size: 17px; }
-  input[type=file] { display: none; }
-  video { width: 100%; background: #0d1418; border-radius: 12px; display: block; }
-  #video { max-height: 260px; }
-  #stage { max-height: 400px; }
-  #result { scroll-margin-top: 12px; }
-  .filebar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; font-size: 14px; color: var(--muted); }
-  .filebar span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-  textarea, input[type=text], input[type=password], select {
-    width: 100%; font: inherit; color: inherit;
-    border: 1px solid var(--line); border-radius: 10px;
-    padding: 10px 12px; background: #fff;
-  }
-  textarea { min-height: 140px; resize: vertical; }
-  textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
-  input[type=range] { width: 100%; accent-color: var(--accent); }
-  .meta { display: flex; justify-content: space-between; color: var(--muted); font-size: 14px; margin-top: 6px; }
-  .meta .warn { color: var(--error); }
-
-  button {
-    font: inherit; font-weight: 600;
-    border: 0; border-radius: 10px;
-    padding: 11px 18px; cursor: pointer;
-    background: var(--accent); color: #fff;
-  }
-  button:hover { background: var(--accent-dark); }
-  button:disabled { background: #b9c5cc; cursor: not-allowed; }
-  button.secondary { background: #fff; color: var(--text); border: 1px solid var(--line); }
-  button.secondary:hover { background: #f0f3f5; }
-  button.link { background: none; color: var(--accent-dark); padding: 0; font-weight: 500; font-size: 14px; }
-  button.link:hover { text-decoration: underline; background: none; }
-  button.big { width: 100%; padding: 15px 18px; font-size: 17px; }
-  button.download { background: var(--ok); }
-  button.download:hover { background: #18704a; }
-
-  .status { font-size: 14px; color: var(--muted); margin: 10px 0 0; }
-  .status.error { color: var(--error); }
-  .status.ok { color: var(--ok); }
+  html, body { margin: 0; background: #fff; }
+  body { color: var(--text); font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 4px; }
   .hidden { display: none !important; }
 
-  .progress { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin-top: 14px; }
-  .progress > div { height: 100%; width: 0; background: var(--accent); transition: width .2s linear; }
-  .progress-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 8px; font-size: 14px; color: var(--muted); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
 
-  .done-head {
-    display: flex; align-items: center; gap: 10px;
-    background: var(--ok-soft); color: var(--ok);
-    border-radius: 10px; padding: 10px 14px; margin: 0 0 14px; font-weight: 600;
+  /* Video-Feld */
+  .drop {
+    position: relative; height: var(--h);
+    border: 1.5px dashed #cdd6db; border-radius: 12px; background: var(--soft);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    text-align: center; color: var(--muted); cursor: pointer; overflow: hidden;
+    transition: border-color .15s, background .15s;
   }
-  .done-head.old { background: #f0f3f5; color: var(--muted); }
-  .after { margin-top: 12px; font-size: 14px; color: var(--muted); text-align: center; }
-  .after.ok { color: var(--ok); }
-  .notice { background: #fff6e8; color: #8a5a12; border-radius: 10px; padding: 10px 14px; font-size: 14px; margin: 0 0 12px; }
+  .drop:hover, .drop.over { border-color: var(--accent); background: #eef9fb; }
+  .drop svg { color: var(--accent); }
+  .drop strong { color: var(--text); font-size: 15px; }
+  .drop.has { border-style: solid; border-color: var(--dark); background: var(--dark); cursor: default; }
+  .drop video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+  input[type=file] { display: none; }
+  .chip {
+    position: absolute; right: 8px; bottom: 8px;
+    font: inherit; font-size: 13px; font-weight: 600;
+    background: rgba(255,255,255,.94); color: var(--text);
+    border: 0; border-radius: 8px; padding: 6px 10px; cursor: pointer;
+  }
+  .chip:hover { background: #fff; }
 
-  details { margin-top: 6px; }
-  summary { cursor: pointer; color: var(--muted); font-size: 14px; }
-  .settings { display: grid; gap: 14px; margin-top: 14px; }
-  label { font-size: 14px; color: var(--muted); display: block; margin-bottom: 4px; }
-  .hint { font-size: 13px; color: var(--muted); margin: 4px 0 0; }
-  .row { display: flex; gap: 10px; align-items: center; }
+  /* Text-Feld */
+  .textbox { position: relative; height: var(--h); }
+  textarea {
+    width: 100%; height: 100%; resize: none;
+    font: inherit; color: inherit;
+    border: 1.5px solid var(--line); border-radius: 12px;
+    padding: 12px 14px 30px; background: #fff;
+  }
+  textarea::placeholder { color: #9aa5ab; }
+  textarea:focus, .drop:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .count { position: absolute; left: 14px; right: 14px; bottom: 8px; display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); pointer-events: none; }
+  .count .warn { color: var(--error); }
+
+  /* Buttons */
+  button { font: inherit; cursor: pointer; }
+  .big {
+    width: 100%; margin-top: 12px; padding: 13px 18px;
+    border: 0; border-radius: 10px;
+    font-size: 16px; font-weight: 600; color: #fff; background: var(--accent);
+  }
+  .big:hover { background: var(--accent-dark); }
+  .big:disabled { background: #c3ced3; cursor: not-allowed; }
+  .big.download { background: var(--ok); }
+  .big.download:hover { background: var(--ok-dark); }
+  .link { background: none; border: 0; padding: 0; color: var(--accent-dark); font-size: 13px; font-weight: 500; }
+  .link:hover { text-decoration: underline; }
+  a.link { text-decoration: none; }
+
+  .status { margin: 8px 0 0; font-size: 13px; color: var(--muted); text-align: center; min-height: 19px; }
+  .status.error { color: var(--error); }
+  .links { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 8px; min-height: 19px; font-size: 13px; color: var(--muted); }
+  .links .ok { color: var(--ok); font-weight: 500; }
+
+  /* Ergebnis */
+  .stage { position: relative; height: calc(var(--h) + 12px); border-radius: 12px; overflow: hidden; background: var(--dark); }
+  .stage video { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .rec {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 10px 14px 12px; color: #fff;
+    background: linear-gradient(transparent, rgba(0,0,0,.75) 35%);
+    font-size: 13px;
+  }
+  .rec-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .rec .link { color: #fff; opacity: .85; }
+  .bar { height: 5px; background: rgba(255,255,255,.25); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+  .bar > div { height: 100%; width: 0; background: #fff; transition: width .2s linear; }
+  .wait { margin-top: 12px; padding: 13px 18px; text-align: center; font-size: 14px; color: var(--muted); background: var(--soft); border-radius: 10px; }
+
   #recCanvas { position: fixed; right: 0; bottom: 0; width: 2px; height: 2px; opacity: 0; pointer-events: none; }
-  @media (max-width: 520px) { h1 { font-size: 22px; } .card { padding: 16px; } .step-sub { margin-left: 0; } }
 </style>
 </head>
 <body>
-<main>
-  <h1>Dein Übungsvideo mit Stimme</h1>
-  <p class="lead">Aus deinem Video und deiner Anleitung wird hier ein fertiges Übungsvideo – so, wie Patient:innen es später in der App sehen.</p>
-  <div class="goal"><span>🎯</span><span><b>Ziel:</b> Am Ende lädst du das fertige Video herunter und lädst es in Notion hoch.</span></div>
-  <p class="newtab hidden" id="newtab">Zu wenig Platz? <a href="#" target="_blank" rel="noopener" id="newtabLink">In neuem Tab öffnen ↗</a></p>
+<div class="wrap">
 
-  <section class="card" id="card1">
-    <div class="step"><span class="num">1</span>Video hochladen</div>
-    <p class="step-sub">Dein geschnittenes Video aus Teil A – von Startstellung bis Startstellung.</p>
-    <label class="drop" id="drop">
-      <input type="file" id="videoInput" accept="video/*">
-      <div><strong>Video auswählen</strong></div>
-      <div class="hint">oder hierher ziehen</div>
-    </label>
-    <div id="videoBox" class="hidden">
-      <video id="video" muted playsinline loop></video>
-      <div class="filebar"><span id="fileName"></span><button class="link" id="changeVideo">Anderes Video wählen</button></div>
-    </div>
-    <p id="videoError" class="status error hidden">Dieses Videoformat kann der Browser nicht abspielen. Öffne die Seite in Safari oder exportiere das Video als MP4.</p>
-  </section>
-
-  <section class="card" id="card2">
-    <div class="step"><span class="num">2</span>Anleitung einfügen</div>
-    <p class="step-sub">Deine Anleitung aus Teil B. Sie wird vorgelesen, während das Video läuft.</p>
-    <textarea id="text" placeholder="Stell dich auf dein verletztes Bein. Das Knie ist leicht gebeugt …"></textarea>
-    <div class="meta">
-      <span id="wordCount">0 Wörter</span>
-      <span id="duration">ca. 0 Sek. gesprochen</span>
-    </div>
-  </section>
-
-  <section class="card" id="card3">
-    <div class="step"><span class="num">3</span>Fertiges Video erstellen &amp; herunterladen</div>
-    <p class="step-sub">Die Anleitung wird vertont und mit deinem Video zu einer Datei zusammengefügt.</p>
-
-    <div id="createBox">
-      <p class="notice hidden" id="staleNotice">Du hast etwas geändert. Erstelle das Video neu, damit die Änderung drin ist.</p>
-      <button id="speak" class="big" disabled>Video erstellen</button>
-      <p class="status" id="status"></p>
-    </div>
-
-    <div id="result" class="hidden">
-      <div class="done-head hidden" id="doneHead">✓ Dein Video ist fertig</div>
-      <div id="downloadBox" class="hidden" style="margin-bottom:16px">
-        <button id="download" class="big download">⬇ Video herunterladen</button>
-        <p class="after" id="afterDownload">Danach: Lade die Datei in Notion unter Teil C hoch.</p>
-        <p class="hint hidden" id="iframeHint" style="text-align:center">Startet kein Download? <a href="#" target="_blank" rel="noopener" id="iframeHintLink">Tool in neuem Tab öffnen</a> und das Video dort nochmal erstellen.</p>
+  <!-- Eingabe: Video + Anleitung -->
+  <div id="editView">
+    <div class="grid">
+      <label class="drop" id="drop" tabindex="0">
+        <input type="file" id="videoInput" accept="video/*">
+        <span id="dropHint">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="m15.5 10.5 6-3.5v10l-6-3.5"/></svg>
+          <br><strong>Video aus Teil A</strong><br>auswählen oder hierher ziehen
+        </span>
+        <video id="video" class="hidden" muted playsinline loop></video>
+        <button type="button" class="chip hidden" id="changeVideo">Anderes Video</button>
+      </label>
+      <div class="textbox">
+        <textarea id="text" placeholder="Anleitung aus Teil B hier einfügen …"></textarea>
+        <div class="count"><span id="wordCount">0 Wörter</span><span id="duration"></span></div>
       </div>
-      <div id="progressBox" class="hidden" style="margin-bottom:14px">
-        <div class="progress" style="margin-top:0"><div id="progressBar"></div></div>
-        <div class="progress-row">
-          <span id="progressText">Video wird erstellt …</span>
-          <button class="link" id="cancel">Abbrechen</button>
-        </div>
-        <p class="hint">Das Video läuft einmal komplett mit Stimme durch und wird dabei aufgenommen. Lass dieses Fenster so lange offen.</p>
-      </div>
+    </div>
+    <button id="speak" class="big" disabled>Video erstellen</button>
+    <p class="status" id="status"></p>
+  </div>
+
+  <!-- Ergebnis: fertiges Video -->
+  <div id="resultView" class="hidden">
+    <div class="stage">
       <video id="stage" playsinline></video>
-      <p class="hint hidden" id="previewHint">Vorschau mit Systemstimme – zum Herunterladen unter „Stimme ändern“ auf ElevenLabs umstellen.</p>
-    </div>
-  </section>
-
-  <details id="settingsBox">
-    <summary>Stimme ändern (optional)</summary>
-    <div class="card settings" style="margin-top:10px">
-      <div>
-        <label for="engine">Vertonung über</label>
-        <select id="engine">
-          <option value="elevenlabs">ElevenLabs</option>
-          <option value="system">Systemstimme (Notlösung, ohne Download)</option>
-        </select>
-      </div>
-
-      <div id="elSettings" class="settings" style="margin-top:0">
-        <div>
-          <label for="voiceSelect">Stimme</label>
-          <div class="row">
-            <select id="voiceSelect"><option value="EXAVITQu4vr4xnSDxMaL">Sarah (weiblich)</option></select>
-          </div>
-        </div>
-        <div>
-          <label for="model">Modell</label>
-          <select id="model">
-            <option value="eleven_multilingual_v2">Multilingual v2 (beste Qualität)</option>
-            <option value="eleven_flash_v2_5">Flash v2.5 (schneller)</option>
-          </select>
-        </div>
-        <div>
-          <label for="voiceId">Eigene Voice-ID (optional)</label>
-          <input type="text" id="voiceId" placeholder="z. B. aus der ElevenLabs Voice Library">
-        </div>
-        <div>
-          <label for="apiKey">API-Key</label>
-          <input type="password" id="apiKey" placeholder="sk_…" autocomplete="off">
-          <p class="hint" id="keyHint">Wird nur in diesem Browser gespeichert.</p>
-        </div>
-        <p class="status" id="settingsStatus" style="margin:0"></p>
-      </div>
-
-      <div id="sysSettings" class="settings" style="margin-top:0">
-        <div>
-          <label for="sysVoice">Stimme</label>
-          <select id="sysVoice"><option value="">Standardstimme</option></select>
-        </div>
-        <div>
-          <label for="sysRate">Sprechtempo: <span id="sysRateLabel">0.95</span></label>
-          <input type="range" id="sysRate" min="0.7" max="1.2" step="0.05" value="0.95">
-        </div>
+      <div class="rec hidden" id="rec">
+        <div class="rec-row"><span id="recText">Video wird erstellt …</span><button class="link" id="cancel">Abbrechen</button></div>
+        <div class="bar"><div id="recBar"></div></div>
       </div>
     </div>
-  </details>
-</main>
+    <div class="wait" id="waitNote">Das Video läuft einmal mit Stimme durch und wird dabei aufgenommen – Fenster bitte offen lassen.</div>
+    <button id="download" class="big download hidden">⬇ Fertiges Video herunterladen</button>
+    <div class="links" id="resultLinks">
+      <button class="link" id="back">← Video oder Text ändern</button>
+      <span id="afterDownload"></span>
+    </div>
+  </div>
+
+</div>
 <canvas id="recCanvas" aria-hidden="true"></canvas>
 
 <script>
-  const DEFAULT_KEY = "__ELEVENLABS_KEY__";
-  const DEFAULT_VOICE = "EXAVITQu4vr4xnSDxMaL"; // Sarah: ruhig und klar, spricht gut Deutsch
+  const API_KEY = "__ELEVENLABS_KEY__";
+  const VOICE_ID = "EXAVITQu4vr4xnSDxMaL";       // Sarah: ruhig und klar, spricht gut Deutsch
+  const MODEL_ID = "eleven_multilingual_v2";
 
   const $ = (id) => document.getElementById(id);
-  const store = {
-    get(k) { try { return localStorage.getItem(k) || ""; } catch { return ""; } },
-    set(k, v) { try { localStorage.setItem(k, v); } catch {} },
-  };
-
-  const video = $("video"), stage = $("stage"), canvas = $("recCanvas"), text = $("text");
-  const synth = window.speechSynthesis;
-  let videoUrl = null, finalUrl = null, finalExt = "mp4", finalSecs = 0;
-  let audioBuffer = null, audioKey = null;   // letzte Vertonung (gleicher Text = keine neuen Zeichen)
-  let phase = "idle";                        // idle | voicing | recording | done | preview
-  let doneSnapshot = null;                   // Stand (Text, Stimme, Video) des fertigen Videos
-  let message = null;                        // Fehlermeldung o. Ä., überschreibt den Standardhinweis
-  let session = null;                        // laufende Aufnahme
-  let sysId = 0;
-  let actx = null, monitor = null;
-
-  // In Notion eingebettet? Dann Link für neuen Tab anbieten
+  const video = $("video"), stage = $("stage"), canvas = $("recCanvas"), text = $("text"), drop = $("drop");
   const inFrame = (() => { try { return window.self !== window.top; } catch { return true; } })();
-  if (inFrame) {
-    $("newtab").classList.remove("hidden");
-    $("newtabLink").href = $("iframeHintLink").href = location.href;
-  }
 
-  // ---------- Einstellungen ----------
-  $("apiKey").value = store.get("el_key") || DEFAULT_KEY;
-  if (DEFAULT_KEY) $("keyHint").textContent = "Ein Key ist bereits hinterlegt. Ein eigener Key wird nur in diesem Browser gespeichert.";
-  $("voiceId").value = store.get("el_voice_manual");
-  $("model").value = store.get("el_model") || "eleven_multilingual_v2";
-  $("engine").value = store.get("vertonung_engine") || "elevenlabs";
-  $("sysRate").value = store.get("sys_rate") || "0.95";
-  $("sysRateLabel").textContent = $("sysRate").value;
-  if (!$("apiKey").value) $("settingsBox").open = true;
+  let videoUrl = null;
+  let audioBuffer = null, audioKey = null;          // letzte Vertonung (gleicher Text = keine neuen Zeichen)
+  let finalUrl = null, finalExt = "mp4", finalSecs = 0, doneSnapshot = null;
+  let phase = "idle";                                // idle | voicing | recording | done
+  let view = "edit";                                 // edit | result
+  let message = null;
+  let session = null;
+  let actx = null;
 
-  function showEngine() {
-    const el = $("engine").value === "elevenlabs";
-    $("elSettings").classList.toggle("hidden", !el);
-    $("sysSettings").classList.toggle("hidden", el);
-  }
-  showEngine();
-
-  $("engine").addEventListener("change", () => { store.set("vertonung_engine", $("engine").value); showEngine(); message = null; render(); });
-  $("apiKey").addEventListener("change", () => { store.set("el_key", $("apiKey").value.trim()); if (!$("apiKey").value.trim()) $("apiKey").value = DEFAULT_KEY; loadVoices(); });
-  $("voiceId").addEventListener("input", () => { store.set("el_voice_manual", $("voiceId").value.trim()); render(); });
-  $("voiceSelect").addEventListener("change", () => { store.set("el_voice", $("voiceSelect").value); render(); });
-  $("model").addEventListener("change", () => { store.set("el_model", $("model").value); render(); });
-  $("sysVoice").addEventListener("change", () => store.set("sys_voice", $("sysVoice").value));
-  $("sysRate").addEventListener("input", () => { $("sysRateLabel").textContent = $("sysRate").value; store.set("sys_rate", $("sysRate").value); });
-
-  async function loadVoices() {
-    const key = $("apiKey").value.trim();
-    const s = $("settingsStatus");
-    if (!key) return;
-    try {
-      const res = await fetch("https://api.elevenlabs.io/v1/voices", { headers: { "xi-api-key": key } });
-      if (!res.ok) throw new Error(await apiError(res));
-      const data = await res.json();
-      const sel = $("voiceSelect");
-      sel.innerHTML = "";
-      const gender = { female: "weiblich", male: "männlich" };
-      for (const v of data.voices || []) {
-        const o = document.createElement("option");
-        o.value = v.voice_id;
-        o.textContent = v.name.split(" - ")[0] + (v.labels?.gender ? " (" + (gender[v.labels.gender] || "neutral") + ")" : "");
-        sel.appendChild(o);
-      }
-      const saved = store.get("el_voice");
-      const has = (id) => [...sel.options].some(o => o.value === id);
-      if (saved && has(saved)) sel.value = saved; else if (has(DEFAULT_VOICE)) sel.value = DEFAULT_VOICE;
-      s.textContent = ""; s.className = "status";
-    } catch (e) {
-      s.textContent = "Stimmen konnten nicht geladen werden: " + e.message;
-      s.className = "status error";
-    }
-  }
-  loadVoices();
-
-  function germanVoices() {
-    if (!synth) return [];
-    const score = (v) => (/premium|erweitert|enhanced/i.test(v.name) ? 0 : 1) + (v.localService ? 0 : 2);
-    return synth.getVoices().filter(v => /^de(-|_|$)/i.test(v.lang)).sort((a, b) => score(a) - score(b) || a.name.localeCompare(b.name));
-  }
-  function fillSysVoices() {
-    const sel = $("sysVoice"), voices = germanVoices();
-    if (!voices.length) return;
-    sel.innerHTML = "";
-    for (const v of voices) {
-      const o = document.createElement("option");
-      o.value = v.name;
-      o.textContent = v.name + " (" + v.lang + ")" + (v.localService ? "" : " – online");
-      sel.appendChild(o);
-    }
-    const saved = store.get("sys_voice");
-    if (saved && voices.some(v => v.name === saved)) sel.value = saved;
-  }
-  if (synth) { fillSysVoices(); synth.addEventListener("voiceschanged", fillSysVoices); }
-
-  // ---------- Schritt 1: Video ----------
-  const drop = $("drop");
+  // ---------- Video ----------
   $("videoInput").addEventListener("change", (e) => setVideo(e.target.files[0]));
   ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
   ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
   drop.addEventListener("drop", (e) => setVideo(e.dataTransfer.files[0]));
-  $("changeVideo").addEventListener("click", () => { $("videoInput").value = ""; $("videoInput").click(); });
+  drop.addEventListener("click", (e) => { if (videoUrl && e.target !== $("videoInput")) e.preventDefault(); });   // mit Video: nur über „Anderes Video“
+  drop.addEventListener("keydown", (e) => { if (!videoUrl && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); $("videoInput").click(); } });
+  $("changeVideo").addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); $("videoInput").value = ""; $("videoInput").click(); });
 
   function setVideo(file) {
     if (!file) return;
-    if (phase === "recording" || phase === "preview") {
-      stopAll();
-      phase = finalUrl ? "done" : "idle";
-      if (finalUrl) { stage.src = finalUrl; stage.controls = true; stage.muted = false; stage.loop = false; }
-    }
+    if (!/^video\//.test(file.type) && !/\.(mov|mp4|m4v|webm)$/i.test(file.name)) { setMessage("Das ist keine Videodatei.", "error"); return; }
     if (videoUrl) URL.revokeObjectURL(videoUrl);
     videoUrl = URL.createObjectURL(file);
-    $("videoError").classList.add("hidden");
     video.src = videoUrl;
+    video.classList.remove("hidden");
     video.play().catch(() => {});
-    $("fileName").textContent = file.name;
-    $("videoBox").classList.remove("hidden");
-    drop.classList.add("hidden");
+    $("dropHint").classList.add("hidden");
+    $("changeVideo").classList.remove("hidden");
+    drop.classList.add("has");
     message = null;
     render();
   }
-  video.addEventListener("error", () => { if (video.src) $("videoError").classList.remove("hidden"); });
+  video.addEventListener("error", () => { if (video.getAttribute("src")) setMessage("Dieses Videoformat kann der Browser nicht abspielen – bitte als MP4 exportieren oder Safari nutzen.", "error"); });
 
-  // ---------- Schritt 2: Text ----------
+  // ---------- Text ----------
   text.addEventListener("input", () => { message = null; render(); });
   const wordCount = () => (text.value.trim() ? text.value.trim().split(/\s+/).length : 0);
-  function currentAudioKey() {
-    return JSON.stringify([text.value.trim(), $("voiceId").value.trim() || $("voiceSelect").value, $("model").value]);
-  }
-  const snapshot = () => currentAudioKey() + "|" + videoUrl + "|" + $("engine").value;
+  const snapshot = () => text.value.trim() + "|" + videoUrl;
 
   // ---------- Anzeige ----------
   function render() {
     const words = wordCount();
-    $("wordCount").textContent = words + (words === 1 ? " Wort" : " Wörter") + (words > 100 ? " – bitte kürzer (max. ca. 100)" : "");
+    $("wordCount").textContent = words + " / 100 Wörter";
     $("wordCount").className = words > 100 ? "warn" : "";
-    $("duration").textContent = "ca. " + Math.round(words / 2.2) + " Sek. gesprochen";
+    $("duration").textContent = words ? "ca. " + Math.round(words / 2.2) + " Sek." : "";
 
     const hasVideo = !!videoUrl, hasText = words > 0;
-    const finished = phase === "done" || phase === "preview";
-    const stale = finished && snapshot() !== doneSnapshot;
+    const stale = !!finalUrl && snapshot() !== doneSnapshot;
 
-    $("card1").classList.toggle("done", hasVideo);
-    $("card2").classList.toggle("done", hasText);
-    $("card3").classList.toggle("done", phase === "done" && !stale);
-    $("card3").classList.toggle("locked", !(hasVideo && hasText) && phase === "idle");
+    $("editView").classList.toggle("hidden", view !== "edit");
+    $("resultView").classList.toggle("hidden", view !== "result");
 
-    // Erstellen-Bereich: ausblenden, solange aufgenommen wird oder das fertige Video aktuell ist
-    $("createBox").classList.toggle("hidden", phase === "recording" || (finished && !stale));
-    $("staleNotice").classList.toggle("hidden", !stale);
     const speak = $("speak");
     speak.disabled = !(hasVideo && hasText) || phase === "voicing";
-    speak.textContent = phase === "voicing" ? "Wird vertont …" : finished ? "Video neu erstellen" : "Video erstellen";
+    speak.textContent = phase === "voicing" ? "Stimme wird erzeugt …" : finalUrl ? "Video neu erstellen" : "Video erstellen";
 
     const st = $("status");
-    if (message) { st.textContent = message.text; st.className = "status " + (message.cls || ""); }
-    else {
-      st.className = "status";
-      const missing = [];
-      if (!hasVideo) missing.push("dein Video (Schritt 1)");
-      if (!hasText) missing.push("deine Anleitung (Schritt 2)");
-      st.textContent = missing.length ? "Dafür fehlt noch " + missing.join(" und ") + "."
-        : phase === "voicing" ? "Die Stimme wird erzeugt …"
-        : "Dauert ungefähr so lange wie das fertige Video selbst.";
-    }
+    st.className = "status" + (message?.cls ? " " + message.cls : "");
+    st.innerHTML = "";
+    if (message) st.textContent = message.text;
+    else if (!hasVideo || !hasText) st.textContent = !hasVideo && !hasText ? "Lade dein Video hoch und füge deine Anleitung ein." : !hasVideo ? "Jetzt noch dein Video hochladen." : "Jetzt noch deine Anleitung einfügen.";
+    else if (finalUrl && !stale) {
+      const b = document.createElement("button");
+      b.className = "link"; b.textContent = "Zum fertigen Video →";
+      b.onclick = () => { view = "result"; render(); };
+      st.appendChild(b);
+    } else if (finalUrl && stale) st.textContent = "Du hast etwas geändert – erstelle das Video neu.";
 
-    // Ergebnis-Bereich
-    $("result").classList.toggle("hidden", !(phase === "recording" || finished));
-    $("progressBox").classList.toggle("hidden", phase !== "recording");
-    $("doneHead").classList.toggle("hidden", phase !== "done");
-    $("downloadBox").classList.toggle("hidden", phase !== "done");
-    $("previewHint").classList.toggle("hidden", phase !== "preview");
-    $("iframeHint").classList.toggle("hidden", !inFrame);
-    if (phase === "done") {
-      $("doneHead").textContent = stale ? "Bisheriges Video (ohne deine letzte Änderung)" : "✓ Dein Video ist fertig";
-      $("doneHead").classList.toggle("old", stale);
-      $("download").className = stale ? "big secondary" : "big download";
-      $("download").textContent = (stale ? "Bisheriges Video herunterladen" : "⬇ Video herunterladen") + " (" + finalExt.toUpperCase() + " · " + finalSecs + " Sek.)";
-      $("afterDownload").classList.toggle("hidden", stale);
-    }
+    const recording = phase === "recording";
+    $("rec").classList.toggle("hidden", !recording);
+    $("waitNote").classList.toggle("hidden", !recording);
+    $("download").classList.toggle("hidden", recording || !finalUrl);
+    $("resultLinks").classList.toggle("hidden", recording);
+    if (finalUrl) $("download").textContent = "⬇ Fertiges Video herunterladen (" + finalSecs + " Sek.)";
   }
-  function setMessage(textMsg, cls) { message = { text: textMsg, cls }; render(); }
+  function setMessage(t, cls) { message = { text: t, cls }; render(); }
 
-  // ---------- Schritt 3: Vertonen & aufnehmen ----------
+  // ---------- Vertonen & aufnehmen ----------
   function audioCtx() {
-    if (!actx) {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      actx = new AC();
-      monitor = actx.createGain();
-      monitor.connect(actx.destination);
-    }
+    if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
     if (actx.state === "suspended") actx.resume().catch(() => {});
     return actx;
   }
 
   $("speak").addEventListener("click", async () => {
     message = null;
-    if ($("engine").value === "system") { playSystem(); return; }
-
-    const key = $("apiKey").value.trim();
-    const voice = $("voiceId").value.trim() || $("voiceSelect").value;
-    if (!key || !voice) {
-      $("settingsBox").open = true;
-      setMessage("Bitte unter „Stimme ändern“ einen API-Key und eine Stimme festlegen.", "error");
-      return;
-    }
     const ctx = audioCtx(); // im Klick anlegen, damit der Browser den Ton freigibt
-    const prevPhase = phase;
     try {
-      const want = currentAudioKey();
+      const want = text.value.trim();
       if (!audioBuffer || want !== audioKey) {
         phase = "voicing"; render();
-        const res = await fetch("https://api.elevenlabs.io/v1/text-to-speech/" + encodeURIComponent(voice) + "?output_format=mp3_44100_128", {
+        const res = await fetch("https://api.elevenlabs.io/v1/text-to-speech/" + VOICE_ID + "?output_format=mp3_44100_128", {
           method: "POST",
-          headers: { "xi-api-key": key, "Content-Type": "application/json", "Accept": "audio/mpeg" },
-          body: JSON.stringify({ text: text.value.trim(), model_id: $("model").value }),
+          headers: { "xi-api-key": API_KEY, "Content-Type": "application/json", "Accept": "audio/mpeg" },
+          body: JSON.stringify({ text: want, model_id: MODEL_ID }),
         });
         if (!res.ok) throw new Error(await apiError(res));
-        const data = await (await res.blob()).arrayBuffer();
-        audioBuffer = await ctx.decodeAudioData(data);
+        audioBuffer = await ctx.decodeAudioData(await (await res.blob()).arrayBuffer());
         audioKey = want;
       }
       await record();
     } catch (e) {
-      phase = prevPhase === "done" ? "done" : "idle";
+      phase = finalUrl ? "done" : "idle"; view = "edit";
       setMessage("Das hat nicht geklappt: " + e.message, "error");
     }
   });
@@ -487,22 +264,16 @@
   async function apiError(res) {
     let detail = "";
     try { const j = await res.json(); detail = j.detail?.message || j.detail?.status || (typeof j.detail === "string" ? j.detail : ""); } catch {}
-    if (res.status === 401) return "API-Key ungültig oder ohne Berechtigung" + (detail ? " (" + detail + ")" : "");
-    if (res.status === 429) return "Zu viele Anfragen oder Kontingent aufgebraucht" + (detail ? " (" + detail + ")" : "");
+    if (res.status === 401) return "Zugang zur Stimme fehlt (API-Key)";
+    if (res.status === 429) return "Kontingent für die Stimme aufgebraucht";
     return "Fehler " + res.status + (detail ? ": " + detail : "");
   }
 
   function pickMime() {
     if (!window.MediaRecorder) return null;
-    const types = [
-      "video/mp4;codecs=avc1.640028,mp4a.40.2",
-      "video/mp4;codecs=avc1,mp4a.40.2",
-      "video/mp4",
-      "video/webm;codecs=vp9,opus",
-      "video/webm;codecs=vp8,opus",
-      "video/webm",
-    ];
-    return types.find(t => MediaRecorder.isTypeSupported(t)) || "";
+    return ["video/mp4;codecs=avc1.640028,mp4a.40.2", "video/mp4;codecs=avc1,mp4a.40.2", "video/mp4",
+            "video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"]
+      .find(t => MediaRecorder.isTypeSupported(t)) || "";
   }
 
   function waitReady(v) {
@@ -513,20 +284,19 @@
     });
   }
 
-  // Video läuft in Schleife, bis die Stimme fertig ist, und endet in der Startstellung.
+  // Das Video läuft in Schleife, bis die Stimme fertig ist, und endet in der Startstellung.
   // Bild (Canvas) und Stimme (Web Audio) werden dabei gemeinsam aufgenommen.
   async function record() {
-    stopAll();
+    abortRecording();
     const mime = pickMime();
     if (mime === null || !canvas.captureStream) throw new Error("Dieser Browser kann kein Video erstellen – bitte Safari oder Chrome nutzen.");
     const ctx = audioCtx();
     const snap = snapshot();
     video.pause();
 
-    phase = "recording"; render();
-    $("result").scrollIntoView({ behavior: "smooth", block: "start" });
-    $("progressBar").style.width = "0";
-    $("progressText").textContent = "Video wird erstellt …";
+    phase = "recording"; view = "result"; render();
+    $("recBar").style.width = "0";
+    $("recText").textContent = "Video wird erstellt …";
     stage.controls = false; stage.muted = true; stage.loop = true;
     stage.src = videoUrl;
     await waitReady(stage);
@@ -545,7 +315,7 @@
     const src = ctx.createBufferSource();
     src.buffer = audioBuffer;
     src.connect(dest);
-    src.connect(monitor); // gleichzeitig hörbar
+    src.connect(ctx.destination); // gleichzeitig hörbar
 
     const stream = canvas.captureStream(30);
     dest.stream.getAudioTracks().forEach(t => stream.addTrack(t));
@@ -563,8 +333,8 @@
         if (!s.drawing) return;
         g.drawImage(stage, 0, 0, w, h);
         const t = Math.max(0, ctx.currentTime - s.startAt);
-        $("progressBar").style.width = Math.min(100, t / total * 100) + "%";
-        $("progressText").textContent = "Video wird erstellt … " + Math.min(Math.round(t), Math.round(total)) + " von " + Math.round(total) + " Sek.";
+        $("recBar").style.width = Math.min(100, t / total * 100) + "%";
+        $("recText").textContent = "Video wird erstellt … " + Math.min(Math.round(t), Math.round(total)) + " von " + Math.round(total) + " Sek.";
         requestAnimationFrame(draw);
       };
 
@@ -587,10 +357,8 @@
         stage.loop = false; stage.muted = false; stage.controls = true;
         stage.src = finalUrl;
         phase = "done"; doneSnapshot = snap;
-        $("afterDownload").textContent = "Danach: Lade die Datei in Notion unter Teil C hoch.";
-        $("afterDownload").className = "after";
+        $("afterDownload").textContent = "";
         render();
-        $("result").scrollIntoView({ behavior: "smooth", block: "start" });
         resolve();
       };
 
@@ -602,7 +370,7 @@
         requestAnimationFrame(draw);
       }).catch(() => {
         abortRecording();
-        phase = "idle";
+        phase = finalUrl ? "done" : "idle"; view = "edit";
         setMessage("Abspielen wurde blockiert – klick nochmal auf „Video erstellen“.", "error");
       });
     });
@@ -616,22 +384,24 @@
     s.drawing = false;
     try { s.src.stop(); } catch {}
     if (s.recorder.state !== "inactive") s.recorder.stop(); else s.done();
-  }
-
-  function stopAll() {
-    abortRecording();
-    sysId++;
-    if (synth) synth.cancel();
     stage.pause();
   }
 
   stage.addEventListener("ended", () => { if (session && session.onStageEnded) session.onStageEnded(); });
 
   $("cancel").addEventListener("click", () => {
-    stopAll();
-    if (finalUrl) { phase = "done"; stage.src = finalUrl; stage.controls = true; stage.muted = false; stage.loop = false; }
-    else phase = "idle";
-    setMessage("Abgebrochen. Ein neuer Versuch kostet keine zusätzlichen Zeichen.");
+    abortRecording();
+    phase = finalUrl ? "done" : "idle"; view = "edit";
+    if (finalUrl) { stage.src = finalUrl; stage.controls = true; stage.muted = false; stage.loop = false; }
+    video.play().catch(() => {});
+    setMessage("Abgebrochen – ein neuer Versuch kostet nichts extra.");
+  });
+
+  $("back").addEventListener("click", () => {
+    stage.pause();
+    view = "edit"; message = null;
+    video.play().catch(() => {});
+    render();
   });
 
   $("download").addEventListener("click", () => {
@@ -639,29 +409,18 @@
     const a = document.createElement("a");
     a.href = finalUrl; a.download = "uebungsvideo." + finalExt;
     document.body.appendChild(a); a.click(); a.remove();
-    $("afterDownload").textContent = "✓ Gespeichert (Ordner „Downloads“). Jetzt in Notion unter Teil C hochladen.";
-    $("afterDownload").className = "after ok";
+    const after = $("afterDownload");
+    after.innerHTML = "";
+    const ok = document.createElement("span");
+    ok.className = "ok"; ok.textContent = "✓ Heruntergeladen – jetzt unten in Notion hochladen";
+    after.appendChild(ok);
+    if (inFrame) {
+      const a2 = document.createElement("a");
+      a2.className = "link"; a2.href = location.href; a2.target = "_blank"; a2.rel = "noopener";
+      a2.textContent = " · Nichts passiert? In neuem Tab öffnen";
+      after.appendChild(a2);
+    }
   });
-
-  // ---------- Notlösung: Systemstimme (nur Vorschau, kein Download) ----------
-  async function playSystem() {
-    if (!synth) { setMessage("Dieser Browser hat keine Systemstimme.", "error"); return; }
-    stopAll();
-    const id = ++sysId;
-    video.pause();
-    phase = "preview"; doneSnapshot = snapshot(); render();
-    stage.controls = false; stage.muted = true; stage.loop = true;
-    stage.src = videoUrl;
-    try { await waitReady(stage); stage.currentTime = 0; await stage.play(); }
-    catch { phase = "idle"; setMessage("Abspielen blockiert – klick nochmal auf „Video erstellen“.", "error"); return; }
-    const u = new SpeechSynthesisUtterance(text.value.trim());
-    u.lang = "de-DE";
-    const v = germanVoices().find(v => v.name === $("sysVoice").value);
-    if (v) u.voice = v;
-    u.rate = parseFloat($("sysRate").value) || 1;
-    u.onend = () => { if (id === sysId) stage.loop = false; };
-    synth.speak(u);
-  }
 
   render();
 </script>
