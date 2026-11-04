@@ -80,8 +80,12 @@
 
   .status { margin: 8px 0 0; font-size: 13px; color: var(--muted); text-align: center; min-height: 19px; }
   .status.error { color: var(--error); }
-  .links { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 8px; min-height: 19px; font-size: 13px; color: var(--muted); }
-  .links .ok { color: var(--ok); font-weight: 500; }
+  .ok { color: var(--ok); font-weight: 500; }
+  .actions { display: grid; grid-template-columns: 1fr 1.6fr; gap: 10px; margin-top: 12px; }
+  .actions .big { margin-top: 0; }
+  .big.secondary { background: #fff; color: var(--text); border: 1.5px solid #cdd6db; }
+  .big.secondary:hover { background: var(--soft); border-color: var(--accent); color: var(--accent-dark); }
+  @media (max-width: 560px) { .actions { grid-template-columns: 1fr; } #download { order: -1; } }
 
   /* Ergebnis */
   .stage { position: relative; height: calc(var(--h) + 12px); border-radius: 12px; overflow: hidden; background: var(--dark); }
@@ -135,11 +139,11 @@
       </div>
     </div>
     <div class="wait" id="waitNote">Das Video läuft einmal mit Stimme durch und wird dabei aufgenommen – Fenster bitte offen lassen.</div>
-    <button id="download" class="big download hidden">⬇ Fertiges Video herunterladen</button>
-    <div class="links" id="resultLinks">
-      <button class="link" id="back">← Video oder Text ändern</button>
-      <span id="afterDownload"></span>
+    <div class="actions" id="resultActions">
+      <button class="big secondary" id="back">← Video oder Text ändern</button>
+      <button id="download" class="big download hidden">⬇ Fertiges Video herunterladen</button>
     </div>
+    <p class="status" id="afterDownload"></p>
   </div>
 
 </div>
@@ -226,7 +230,8 @@
     $("rec").classList.toggle("hidden", !recording);
     $("waitNote").classList.toggle("hidden", !recording);
     $("download").classList.toggle("hidden", recording || !finalUrl);
-    $("resultLinks").classList.toggle("hidden", recording);
+    $("resultActions").classList.toggle("hidden", recording);
+    $("afterDownload").classList.toggle("hidden", recording);
     if (finalUrl) $("download").textContent = "⬇ Fertiges Video herunterladen (" + finalSecs + " Sek.)";
   }
   function setMessage(t, cls) { message = { text: t, cls }; render(); }
